@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="swingQr:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/swingQr_jar</output-path>
+    <root id="archive" name="swingQr.jar">
+      <element id="module-output" name="swingQr" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../QRCodeGenerator/src/lib/zxing-2.1.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
