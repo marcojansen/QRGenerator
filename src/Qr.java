@@ -5,9 +5,12 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -94,8 +97,15 @@ public class Qr extends JFrame{
                     }
                     content += "discovery_etcd.zip ";
                 }
-                if (!content.isEmpty())
-                    imageLabel.setIcon(new ImageIcon(generateQR(content)));
+                if (!content.isEmpty()) {
+                    BufferedImage qr_code = generateQR(content);
+                    imageLabel.setIcon(new ImageIcon(qr_code));
+                    try {
+                        ImageIO.write(qr_code, "png", new File("qr.png"));
+                    } catch (IOException e2) {
+                        e2.printStackTrace();
+                    }
+                }
 
             }
         });
