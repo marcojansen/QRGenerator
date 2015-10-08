@@ -80,7 +80,7 @@ public class Qr extends JFrame{
                 if (processorCheckBox.isSelected() || producerCheckBox.isSelected() || queueCheckBox.isSelected()) {
                     //Needed bundles for all of the autostart bundles
                     content += "cosgi.auto.start.1=";
-                    content += "remote_service_admin_http.zip topology_manager.zip discovery_etcd.zip ";
+                    content += "remote_service_admin_http.zip topology_manager.zip org.inaetics.demonstrator.api.stats.StatsProvider_endpoint.zip ";
                     if (processorCheckBox.isSelected() || producerCheckBox.isSelected()) {
                         content += "org.inaetics.demonstrator.api.queue.SampleQueue_proxy.zip ";
                         if (processorCheckBox.isSelected())
@@ -92,6 +92,7 @@ public class Qr extends JFrame{
                         content += "org.inaetics.demonstrator.api.queue.SampleQueue_endpoint.zip ";
                         content += "org.inaetics.demonstrator.api.queue.SampleQueue.zip ";
                     }
+                    content += "discovery_etcd.zip ";
                 }
                 if (!content.isEmpty())
                     imageLabel.setIcon(new ImageIcon(generateQR(content)));
