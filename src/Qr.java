@@ -42,9 +42,9 @@ public class Qr extends JFrame{
     public Qr() {
         setTitle("QR code");
         setContentPane(rootpanel);
-        setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         pack();
+        setLocationRelativeTo(null);
         setVisible(true);
 
 
