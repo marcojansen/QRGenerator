@@ -25,13 +25,13 @@ public class Qr extends JFrame{
 
     private JPanel rootpanel;
     private JTextArea extraSettings;
-    private JComboBox ipComboBox;
-    private JCheckBox includeIPCheckBox;
     private JButton generateButton;
     private JLabel imageLabel;
     private JCheckBox processorCheckBox;
     private JCheckBox producerCheckBox;
     private JCheckBox queueCheckBox;
+    private JTextField etcd_server_ip;
+    private JTextField etcd_server_port;
 
 
     /**
@@ -47,18 +47,6 @@ public class Qr extends JFrame{
         pack();
         setVisible(true);
 
-        ArrayList<String> ips= null;
-        try {
-            ips = getLocalIp();
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
-        for (String ip :ips) {
-            ipComboBox.addItem(ip);
-        }
-        ipComboBox.setSelectedIndex(ipComboBox.getItemCount() -1);
-        BufferedImage qrcode = generateQR("DISCOVERY_ETCD_SERVER_IP=" + ipComboBox.getSelectedItem());
-        imageLabel.setIcon(new ImageIcon(qrcode));
 
         generateButton.addActionListener(e -> {
             //Translate options to content for QR code
@@ -69,30 +57,31 @@ public class Qr extends JFrame{
             } catch (MalformedURLException e1) {
                 String content = "";
                 //Not an URL? read options and add content
-                if (includeIPCheckBox.isSelected()) {
-                    content += "DISCOVERY_ETCD_SERVER_IP=";
-                    content += ipComboBox.getSelectedItem() +"\n";
-                }
                 if (!extraSettings.getText().isEmpty()) {
                     Scanner sc = new Scanner(extraSettings.getText());
                     while (sc.hasNext()) {
                         content += sc.next() + "\n";
                     }
                 }
+                if (!etcd_server_ip.getText().isEmpty()) {
+                    content += "DISCOVERY_ETCD_SERVER_IP=" + etcd_server_ip.getText() + "\n";
+                }
+                if (!etcd_server_port.getText().isEmpty()) {
+                    content += "DISCOVERY_ETCD_SERVER_PORT=" + etcd_server_port.getText() + "\n";
+                }
                 //If one of the autostart checkboxes is selected
                 if (processorCheckBox.isSelected() || producerCheckBox.isSelected() || queueCheckBox.isSelected()) {
                     //Needed bundles for all of the autostart bundles
                     content += "cosgi.auto.start.1=";
-                    content += "remote_service_admin_http.zip topology_manager.zip org.inaetics.demonstrator.api.stats.StatsProvider_endpoint.zip ";
-                    if (processorCheckBox.isSelected() || producerCheckBox.isSelected()) {
-                        content += "org.inaetics.demonstrator.api.queue.SampleQueue_proxy.zip ";
-                        if (processorCheckBox.isSelected())
-                            content += "org.inaetics.demonstrator.api.processor.Processor.zip ";
-                        if (producerCheckBox.isSelected())
-                            content += "org.inaetics.demonstrator.api.producer.Producer.zip ";
+                    content += "remote_service_admin_dfi.zip topology_manager.zip ";
+                    if (processorCheckBox.isSelected()) {
+                        content += "org.inaetics.demonstrator.api.processor.Processor.zip ";
+                    }
+                    if (producerCheckBox.isSelected()) {
+                        content += "org.inaetics.demonstrator.api.producer.Producer.zip ";
+                        content += "org.inaetics.demonstrator.android.shakedetection.zip ";
                     }
                     if (queueCheckBox.isSelected()) {
-                        content += "org.inaetics.demonstrator.api.queue.SampleQueue_endpoint.zip ";
                         content += "org.inaetics.demonstrator.api.queue.SampleQueue.zip ";
                     }
                     content += "discovery_etcd.zip ";
@@ -146,28 +135,5 @@ public class Qr extends JFrame{
             e.printStackTrace();
             return null;
         }
-    }
-
-    /**
-     * Returns a list of ipv4 adresses
-     * @return      List of ipv4 adresses
-     * @throws SocketException
-     */
-    private ArrayList<String> getLocalIp() throws SocketException {
-        ArrayList<String> possibilities = new ArrayList<>();
-        Enumeration e = NetworkInterface.getNetworkInterfaces();
-        while(e.hasMoreElements())
-        {
-            NetworkInterface n = (NetworkInterface) e.nextElement();
-            Enumeration ee = n.getInetAddresses();
-            while (ee.hasMoreElements())
-            {
-                InetAddress i = (InetAddress) ee.nextElement();
-                if (!i.isLoopbackAddress() && i instanceof Inet4Address) {
-                    possibilities.add(i.getHostAddress());
-                }
-            }
-        }
-        return possibilities;
     }
 }
