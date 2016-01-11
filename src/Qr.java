@@ -32,6 +32,7 @@ public class Qr extends JFrame{
     private JCheckBox queueCheckBox;
     private JTextField etcd_server_ip;
     private JTextField etcd_server_port;
+    private JCheckBox deploymentCheckBox;
 
 
     /**
@@ -85,6 +86,9 @@ public class Qr extends JFrame{
                         content += "org.inaetics.demonstrator.api.queue.SampleQueue.zip ";
                     }
                     content += "discovery_etcd.zip ";
+                }
+                if (deploymentCheckBox.isSelected()) {
+                    content += "deployment_admin.zip ";
                 }
                 if (!content.isEmpty()) {
                     BufferedImage qr_code = generateQR(content);
