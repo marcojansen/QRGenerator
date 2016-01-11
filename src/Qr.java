@@ -71,21 +71,23 @@ public class Qr extends JFrame{
                     content += "DISCOVERY_ETCD_SERVER_PORT=" + etcd_server_port.getText() + "\n";
                 }
                 //If one of the autostart checkboxes is selected
-                if (processorCheckBox.isSelected() || producerCheckBox.isSelected() || queueCheckBox.isSelected()) {
+                if (processorCheckBox.isSelected() || producerCheckBox.isSelected() || queueCheckBox.isSelected() || deploymentCheckBox.isSelected()) {
                     //Needed bundles for all of the autostart bundles
                     content += "cosgi.auto.start.1=";
-                    content += "remote_service_admin_dfi.zip topology_manager.zip ";
-                    if (processorCheckBox.isSelected()) {
-                        content += "org.inaetics.demonstrator.api.processor.Processor.zip ";
+                    if (processorCheckBox.isSelected() || producerCheckBox.isSelected() || queueCheckBox.isSelected()) {
+                        content += "remote_service_admin_dfi.zip topology_manager.zip ";
+                        if (processorCheckBox.isSelected()) {
+                            content += "org.inaetics.demonstrator.api.processor.Processor.zip ";
+                        }
+                        if (producerCheckBox.isSelected()) {
+                            content += "org.inaetics.demonstrator.api.producer.Producer.zip ";
+                            content += "org.inaetics.demonstrator.android.shakedetection.zip ";
+                        }
+                        if (queueCheckBox.isSelected()) {
+                            content += "org.inaetics.demonstrator.api.queue.SampleQueue.zip ";
+                        }
+                        content += "discovery_etcd.zip ";
                     }
-                    if (producerCheckBox.isSelected()) {
-                        content += "org.inaetics.demonstrator.api.producer.Producer.zip ";
-                        content += "org.inaetics.demonstrator.android.shakedetection.zip ";
-                    }
-                    if (queueCheckBox.isSelected()) {
-                        content += "org.inaetics.demonstrator.api.queue.SampleQueue.zip ";
-                    }
-                    content += "discovery_etcd.zip ";
                 }
                 if (deploymentCheckBox.isSelected()) {
                     content += "deployment_admin.zip ";
